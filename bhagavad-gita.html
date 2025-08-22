@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>श्रीमद्भगवद्गीता - Bhagavad Gita</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            background: linear-gradient(135deg, #2c1810 0%, #1a202c 100%);
+            min-height: 100vh;
+            color: #e2e8f0;
+            overflow: hidden;
+        }
+        
+        .book-container {
+            perspective: 2000px;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .book {
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            height: 600px;
+            transform-style: preserve-3d;
+        }
+        
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #fffaf0 0%, #fef3c7 100%);
+            border-radius: 15px;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.2),
+                inset 0 0 50px rgba(139, 69, 19, 0.1);
+            padding: 2.5rem;
+            backface-visibility: hidden;
+            transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+            transform-origin: left center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #2d3748;
+            border: 2px solid #d97706;
+        }
+        
+        .page-front {
+            z-index: 100;
+        }
+        
+        .page-back {
+            z-index: 90;
+            transform: rotateY(180deg);
+        }
+        
+        .page.flipping {
+            z-index: 200;
+        }
+        
+        .page h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1e40af;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .shloka {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+            color: #1e3a8a;
+            text-align: center;
+        }
+        
+        .explanation {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            color: #4b5563;
+            background: rgba(255, 251, 235, 0.9);
+            padding: 1.2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #fbbf24;
+            text-align: center;
+            max-width: 90%;
+        }
+        
+        .krishna-image {
+            width: 250px;
+            height: 250px;
+            border-radius: 15px;
+            margin: 1rem 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            object-fit: cover;
+            border: 4px solid #d97706;
+        }
+        
+        .logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 1rem 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            object-fit: cover;
+            border: 4px solid #dc2626;
+        }
+        
+        .navigation {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 1000;
+        }
+        
+        .nav-btn {
+            background: linear-gradient(45deg, #dc2626, #ea580c);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(220, 38, 38, 0.6);
+        }
+        
+        .page-number {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #dc2626;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .chapter-title {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            font-size: 1rem;
+            color: #78716c;
+            font-weight: 600;
+        }
+        
+        .book-spine {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(to right, #7c2d12, #9a3412);
+            border-radius: 15px 0 0 15px;
+            box-shadow: inset -2px 0 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .welcome-text {
+            font-size: 1.5rem;
+            color: #dc2626;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .creator-text {
+            font-size: 1rem;
+            color: #64748b;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+        
+        /* Swipe Animation */
+        .swipe-guide {
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #64748b;
+        }
+        
+        .finger {
+            width: 40px;
+            height: 40px;
+            background: #dc2626;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            animation: swipe 2s infinite;
+        }
+        
+        @keyframes swipe {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(20px); }
+        }
+        
+        /* Donation Buttons */
+        .donation-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+            width: 90%;
+        }
+        
+        .donation-btn {
+            background: linear-gradient(45deg, #16a34a, #22c55e);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+        }
+        
+        .donation-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+        }
+        
+        .donation-icon {
+            font-size: 1.2rem;
+        }
+        
+        /* QR Code */
+        .qr-container {
+            margin: 1.5rem 0;
+            background: white;
+            padding: 1rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            border: 4px solid #dc2626;
+            border-radius: 12px;
+        }
+        
+        .upi-id {
+            margin-top: 1rem;
+            font-size: 1rem;
+            color: #1e40af;
+            font-weight: 600;
+            background: #f1f5f9;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+        
+        .thankyou-text {
+            font-size: 2rem;
+            color: #dc2626;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+        
+        .message-text {
+            font-size: 1.2rem;
+            color: #4b5563;
+            margin-bottom: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .book {
+                height: 500px;
+                max-width: 90%;
+            }
+            
+            .page {
+                padding: 1.5rem;
+            }
+            
+            .shloka {
+                font-size: 1.4rem;
+            }
+            
+            .explanation {
+                font-size: 0.95rem;
+            }
+            
+            .krishna-image {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .logo {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .nav-btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+            
+            .donation-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .qr-code {
+                width: 150px;
+                height: 150px;
+            }
+        }
+        /* Dynamic 3D tilt for desktop */
+
+
+
+        @media (max-width: 480px) {
+            .book {
+                height: 400px;
+            }
+            
+            .page {
+                padding: 1rem;
+            }
+            
+            .shloka {
+                font-size: 1.2rem;
+            }
+            
+            .explanation {
+                font-size: 0.85rem;
+                padding: 1rem;
+            }
+            
+            .krishna-image {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .logo {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .qr-code {
+                width: 120px;
+                height: 120px;
+            }
+        }
+        
+        /* Audio Controls */
+        .audio-controls {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1000;
+        }
+        
+        .music-btn {
+            background: linear-gradient(45deg, #7c3aed, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        
+        .music-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <!-- Audio Element for Flute Music -->
+    <audio id="fluteMusic" loop>
+        <source src="Mahabharat Sad Tune Ringtone Download - MobCup.Com.Co.mp3" type="audio/mpeg">
+    </audio>
+    
+    <div class="audio-controls">
+        <button class="music-btn" onclick="toggleMusic()">
+            <i class="fas fa-music"></i> संगीत
+        </button>
+    </div>
+
+    <div class="book-container">
+        <div class="book" id="book">
+            <div class="book-spine"></div>
+            
+            <!-- Page 1: Welcome Page (No Shloka) -->
+            <div class="page page-front" id="page1">
+                <div class="page-number">1</div>
+                <div class="chapter-title">प्रस्तावना</div>
+                <img src="download.jpg" class="logo" onerror="this.style.display='none'">
+                <h2>श्रीमद्भगवद्गीता</h2>
+                <div class="welcome-text">स्वागतम्</div>
+                <div class="explanation">
+                    भगवद्गीता के दिव्य ज्ञान के इस सफर में आपका स्वागत है। पृष्ठों को स्वाइप करके आगे बढ़ें और श्रीकृष्ण के शाश्वत उपदेशों का आनंद लें।
+                </div>
+                <div class="swipe-guide">
+                    <div class="finger">
+                        <i class="fas fa-hand-point-right"></i>
+                    </div>
+                    <span>स्वाइप करें</span>
+                </div>
+                <div class="creator-text">Created by <a href="https://www.instagram.com/bhavya_._007" target="_blank"> Bhavya S Solanki</a></div>
+            </div>
+
+            <!-- Page 2: First Shloka -->
+            <div class="page page-back" id="page2">
+                <div class="page-number">2</div>
+                <div class="chapter-title">अध्याय 2, श्लोक 47</div>
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/62afbf3c-4492-49b3-b83e-4e4b3d795da8.png" alt="Krishna guiding Arjuna on the battlefield of Kurukshetra with chariot and divine light" class="krishna-image" onerror="this.style.display='none'">
+                <div class="shloka">कर्मण्येवाधिकारस्ते मा फलेषु कदाचन।<br>मा कर्मफलहेतुर्भूर्मा ते सङ्गोऽस्त्वकर्मणि॥</div>
+                <div class="explanation">
+                    तेरा कर्म करने में ही अधिकार है, फलों में कभी नहीं। इसलिए तू कर्म के फल का हेतु मत बन और न ही तुझे कर्म न करने का आसक्ति हो।
+                    यह श्लोक निष्काम कर्म का सार है - कर्म करो लेकिन फल की इच्छा मत रखो।
+                </div>
+            </div>
+
+            <!-- Page 3: Second Shloka -->
+            <div class="page page-back" id="page3">
+                <div class="page-number">3</div>
+                <div class="chapter-title">अध्याय 4, श्लोक 7</div>
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/7efed365-83c3-467f-85e4-51abf145586e.png" alt="Krishna revealing his universal form to Arjuna with multiple arms and divine manifestations" class="krishna-image" onerror="this.style.display='none'">
+                <div class="shloka">यदा यदा हि धर्मस्य ग्लानिर्भवति भारत।<br>अभ्युत्थानमधर्मस्य तदात्मानं सृजाम्यहम्॥</div>
+                <div class="explanation">
+                    हे भारत! जब-जब धर्म की हानि और अधर्म की वृद्धि होती है, तब-तब मैं स्वयं को प्रकट करता हूँ। भगवान धर्म की रक्षा के लिए समय-समय पर अवतार लेते हैं।
+                </div>
+            </div>
+
+            <!-- Page 4: Third Shloka -->
+            <div class="page page-back" id="page4">
+                <div class="page-number">4</div>
+                <div class="chapter-title">अध्याय 6, श्लोक 5</div>
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/68aebd55-f267-434d-8874-3931b9d61886.png" alt="Krishna meditating in lotus position with serene expression and divine aura" class="krishna-image" onerror="this.style.display='none'">
+                <div class="shloka">उद्धरेदात्मनात्मानं नात्मानमवसादयेत्।<br>आत्मैव ह्यात्मनो बन्धुरात्मैव रिपुरात्मनः॥</div>
+                <div class="explanation">
+                    मनुष्य को चाहिए कि वह अपने आपको अपने द्वारा ही उठाए और अपने आपको नीचे न गिरने दे। 
+                    क्योंकि आत्मा ही अपना मित्र है और आत्मा ही अपना शत्रु है। यह आत्म-नियंत्रण का महत्व बताता है।
+                </div>
+            </div>
+
+            <!-- Page 5: Fourth Shloka -->
+            <div class="page page-back" id="page5">
+                <div class="page-number">5</div>
+                <div class="chapter-title">अध्याय 9, श्लोक 22</div>
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/02368229-e85a-4efc-ba7a-ec5c71928d9d.png" alt="Krishna blessing devotees with raised hand and compassionate smile in golden light" class="krishna-image" onerror="this.style.display='none'">
+                <div class="shloka">अनन्याश्चिन्तयन्तो मां ये जनाः पर्युपासते।<br>तेषां नित्याभियुक्तानां योगक्षेमं वहाम्यहम्॥</div>
+                <div class="explanation">
+                    जो लोग अनन्य भाव से मेरा चिंतन करते हुए मेरी उपासना करते हैं, उन निरंतर युक्त भक्तों का योग (प्राप्त करना) और क्षेम (रक्षा करना) मैं स्वयं वहन करता हूँ।
+                    भगवान भक्तों की सभी जरूरतों का ध्यान रखते हैं।
+                </div>
+            </div>
+
+            <!-- Page 6: Fifth Shloka -->
+            <div class="page page-back" id="page6">
+                <div class="page-number">6</div>
+                <div class="chapter-title">अध्याय 12, श्लोक 13-14</div>
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f45ab81a-66f1-46fc-b8e9-ea326c8c5940.png" alt="Krishna teaching Arjuna about devotion and spiritual wisdom in serene forest setting" class="krishna-image" onerror="this.style.display='none'">
+                <div class="shloka">अद्वेष्टा सर्वभूतानां मैत्रः करुण एव च।<br>निर्ममо निरहंकारः समदुःखसुखः क्षमी॥</div>
+                <div class="explanation">
+                    जो सब प्राणियों के प्रति द्वेष रहित, मैत्रीभाव रखने वाला, करुणाशील, ममतारहित, अहंकाररहित, सुख-दुःख में समभाव रखने वाला और क्षमाशील है।
+                    ऐसे भक्त मुझे अत्यंत प्रिय हैं।
+                </div>
+            </div>
+
+            <!-- Page 7: Sixth Shloka -->
+            <div class="page page-back" id="page7">
+                <div class="page-number">7</div>
+                <div class="chapter-title">अध्याय 18, श्लोक 65</div>
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ef6fd0e3-bd41-4923-8f65-ea74ba537826.png" alt="Krishna embracing Arjuna with divine compassion and guidance in golden light" class="krishna-image" onerror="this.style.display='none'">
+                <div class="shloka">मन्मना भव मद्भक्तो मद्याजी मां नमस्कुरु。<br>मामेवैष्यसि सत्यं ते प्रतिजाने प्रियोऽसि मे॥</div>
+                <div class="explanation">
+                    मुझमें मन लगाओ, मेरे भक्त बनो, मेरी पूजा करो, मुझे नमस्कार करो。 इस प्रकार मुझे प्राप्त करोगे, मैं तुमसे सत्य कहता हूँ, क्योंकि तुम मुझे प्रिय हो।
+                    भगवान भक्ति का महत्व बताते हैं。
+                </div>
+            </div>
+
+            <!-- Page 8: Seventh Shloka -->
+            <div class="page page-back" id="page8">
+                <div class="page-number">8</div>
+                <div class="chapter-title">अध्याय 2, श्लोक 14</div>
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/b2f7e289-8589-4f04-a4b6-93144ae26388.png" alt="Krishna explaining the concept of detachment and eternal soul to Arjuna" class="krishna-image" onerror="this.style.display='none'">
+                <div class="shloka">मात्रास्पर्शास्तु कौन्तेय शीतोष्णसुखदुःखदाः。<br>आगमापायिनोऽनित्यास्तांस्तितिक्षस्व भारत॥</div>
+                <div class="explanation">
+                    हे कुन्तीपुत्र! इन्द्रियों और विषयों के संयोग से उत्पन्न होने वाले सर्दी-गर्मी, सुख-दुःख रूप अनित्य भोगों को सहन करो।
+                    ये आते-जाते रहते हैं, इनके प्रति सहनशील बनो。
+                </div>
+            </div>
+
+            <!-- Page 9: Eighth Shloka -->
+            <div class="page page-back" id="page9">
+                <div class="page-number">9</div>
+                <div class="chapter-title">अध्याय 3, श्लोक 19</div>
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/1c22dc78-f6b3-4b49-834e-2929ddc1bfa0.png" alt="Krishna demonstrating selfless action and duty without attachment" class="krishna-image" onerror="this.style.display='none'">
+                <div class="shloka">तस्मादसक्तः सततं कार्यं कर्म समाचर。<br>असक्तो ह्याचरन्कर्म परमाप्नोति पूरुषः॥</div>
+                <div class="explanation">
+                    इसलिए आसक्ति रहित होकर निरंतर कर्तव्य कर्म का आचरण करो। आसक्ति रहित होकर कर्म करने वाला पुरुष परमात्मा को प्राप्त होता है。
+                    निष्काम कर्म का महत्व समझाया गया है。
+                </div>
+            </div>
+
+            <!-- Page 10: Thank You & Donation Page -->
+            <div class="page page-back" id="page10">
+                <div class="page-number">10</div>
+                <div class="chapter-title">धन्यवाद</div>
+                <div class="thankyou-text">धन्यवाद 🙏</div>
+                <div class="message-text">
+                    भगवद्गीता के इस दिव्य ज्ञान को पढ़ने के लिए धन्यवाद। आपके समर्थन से हम और अधिक लोगों तक इस पवित्र ज्ञान को पहुँचा सकते हैं।
+                </div>
+               
+                
+                <div class="qr-container">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=9998106880@fam&pn=Bhavya%20Solanki&mc=0000&mode=02&purpose=00" 
+                         alt="UPI QR Code for donation to Bhagavad Gita project" class="qr-code">
+                    <div class="upi-id">9998106880@fam</div>
+                </div>
+                
+                <div class="explanation">
+                    यूपीआई आईडी को स्कैन करके या सीधे भुगतान करके दान करें। आपका हर योगदान महत्वपूर्ण है।
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" onclick="prevPage()">पिछला</button>
+        <button class="nav-btn" onclick="nextPage()">अगला</button>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const totalPages = 10;
+        let isAnimating = false;
+        let isMusicPlaying = false;
+        const fluteMusic = document.getElementById('fluteMusic');
+
+        // Auto play music
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                fluteMusic.play().catch(e => {
+                    console.log('Auto-play prevented. User interaction required.');
+                });
+                isMusicPlaying = true;
+            }, 1000);
+        });
+
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                fluteMusic.pause();
+                isMusicPlaying = false;
+            } else {
+                fluteMusic.play();
+                isMusicPlaying = true;
+            }
+        }
+
+        function showPage(pageNumber) {
+            if (isAnimating) return;
+            
+            const allPages = document.querySelectorAll('.page');
+            allPages.forEach(page => {
+                page.classList.remove('page-front');
+                page.classList.add('page-back');
+                page.style.transform = 'rotateY(180deg)';
+                page.style.zIndex = '90';
+            });
+            
+            const currentPageElement = document.getElementById(`page${pageNumber}`);
+            currentPageElement.classList.remove('page-back');
+            currentPageElement.classList.add('page-front');
+            currentPageElement.style.transform = 'rotateY(0deg)';
+            currentPageElement.style.zIndex = '100';
+            
+            currentPage = pageNumber;
+        }
+
+        function flipPage(direction) {
+            if (isAnimating) return;
+            isAnimating = true;
+            
+            const currentPageElement = document.getElementById(`page${currentPage}`);
+            currentPageElement.classList.add('flipping');
+            
+            if (direction === 'next' && currentPage < totalPages) {
+                currentPageElement.style.transform = 'rotateY(-180deg)';
+                setTimeout(() => {
+                    currentPageElement.classList.remove('flipping');
+                    currentPageElement.classList.remove('page-front');
+                    currentPageElement.classList.add('page-back');
+                    currentPage++;
+                    
+                    const nextPageElement = document.getElementById(`page${currentPage}`);
+                    nextPageElement.classList.remove('page-back');
+                    nextPageElement.classList.add('page-front');
+                    nextPageElement.style.transform = 'rotateY(0deg)';
+                    nextPageElement.style.zIndex = '100';
+                    
+                    isAnimating = false;
+                }, 800);
+            } else if (direction === 'prev' && currentPage > 1) {
+                const prevPageElement = document.getElementById(`page${currentPage - 1}`);
+                prevPageElement.classList.add('flipping');
+                prevPageElement.style.transform = 'rotateY(0deg)';
+                prevPageElement.style.zIndex = '200';
+                
+                currentPageElement.style.transform = 'rotateY(180deg)';
+                currentPageElement.style.zIndex = '90';
+                
+                setTimeout(() => {
+                    currentPageElement.classList.remove('page-front');
+                    currentPageElement.classList.add('page-back');
+                    prevPageElement.classList.remove('flipping');
+                    prevPageElement.classList.remove('page-back');
+                    prevPageElement.classList.add('page-front');
+                    
+                    currentPage--;
+                    isAnimating = false;
+                }, 800);
+            } else {
+                isAnimating = false;
+            }
+        }
+
+        function nextPage() {
+            flipPage('next');
+        }
+
+        function prevPage() {
+            flipPage('prev');
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight') {
+                nextPage();
+            } else if (event.key === 'ArrowLeft') {
+                prevPage();
+            }
+        });
+
+        // Touch swipe for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', function(event) {
+            touchStartX = event.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', function(event) {
+            touchEndX = event.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) {
+                nextPage();
+            }
+            if (touchEndX > touchStartX + 50) {
+                prevPage();
+            }
+        }
+
+        // Initialize first page
+        showPage(1);
+    </script>
+</body>
+</html>
+
